@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalTrack - Package Tracking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #00467f;
+            --secondary: #ffb400;
+            --light: #f5f5f5;
+            --dark: #333;
+            --gray: #777;
+            --success: #28a745;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-top {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        
+        .header-top .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-top a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        
+        .header-main {
+            padding: 15px 0;
+        }
+        
+        .header-main .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            font-size: 32px;
+            color: var(--primary);
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+        
+        .track-btn {
+            background-color: var(--secondary);
+            color: var(--dark);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .track-btn:hover {
+            background-color: #e6a200;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 70, 127, 0.9), rgba(0, 70, 127, 0.8)), url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .tracking-form {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .tracking-form h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .form-group input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 16px;
+        }
+        
+        .form-group button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .form-group button:hover {
+            background-color: #003366;
+        }
+        
+        /* Tracking Results */
+        .tracking-results {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 40px auto;
+            max-width: 900px;
+            overflow: hidden;
+        }
+        
+        .tracking-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tracking-id {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            background-color: var(--secondary);
+            color: var(--dark);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .tracking-body {
+            padding: 25px;
+        }
+        
+        .progress-container {
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--success);
+            border-radius: 4px;
+            width: 60%;
+            position: relative;
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+        
+        .step.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .step.completed {
+            color: var(--success);
+        }
+        
+        .step i {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .delivery-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .info-card {
+            background-color: var(--light);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .info-card h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .address-details p {
+            margin-bottom: 8px;
+        }
+        
+        .tracking-history {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .tracking-history h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .history-item {
+            display: flex;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .history-item:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .history-date {
+            min-width: 120px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .history-details {
+            flex: 1;
+        }
+        
+        .history-location {
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-main .container {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+            }
+            
+            .delivery-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 5px 10px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-steps {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .step {
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+            }
+            
+            .step i {
+                margin-right: 10px;
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <div class="container">
+                <div class="contact-info">
+                    <span><i class="fas fa-phone"></i> 1-800-GLOBALTRACK</span>
+                </div>
+                <div class="header-links">
+                    <a href="#"><i class="fas fa-user"></i> Sign In</a>
+                    <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+                </div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <div class="logo">
+                    <i class="fas fa-shipping-fast"></i>
+                    <h1>Global<span>Track</span></h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#">Shipping</a></li>
+                        <li><a href="#">Tracking</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">Business</a></li>
+                    </ul>
+                </nav>
+                <button class="track-btn">Create Shipment</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Track Your Package</h2>
+            <p>Enter your tracking number to get the latest status and estimated delivery date for your package.</p>
+            <div class="tracking-form">
+                <h3>Track Your Shipment</h3>
+                <div class="form-group">
+                    <input type="text" id="tracking-number" placeholder="Enter your tracking number">
+                    <button id="track-btn">Track</button>
+                </div>
+                <p style="text-align: center; color: var(--gray); font-size: 14px;">
+                    <i class="fas fa-info-circle"></i>  1Z999AA10123456784
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tracking Results -->
+    <section class="container">
+        <div class="tracking-results" id="tracking-results">
+            <div class="tracking-header">
+                <div class="tracking-id">Tracking ID: <span id="display-tracking-id">1Z999AA10123456784</span></div>
+                <div class="status-badge" id="status-badge">In Transit</div>
+            </div>
+            <div class="tracking-body">
+                <div class="progress-container">
+                    <h3>Estimated Delivery: <span style="color: var(--success);">Friday, October 27, 2025 by End of Day</span></h3>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="step completed">
+                            <i class="fas fa-check-circle"></i>
+                            <div>Order Processed</div>
+                        </div>
+                        <div class="step completed">
+                            <i class="fas fa-box"></i>
+                            <div>Shipped</div>
+                        </div>
+                        <div class="step active">
+                            <i class="fas fa-shipping-fast"></i>
+                            <div>In Transit</div>
+                        </div>
+                        <div class="step">
+                            <i class="fas fa-truck"></i>
+                            <div>Out for Delivery</div>
+                        </div>
+                        <div class="step">
+                            <i class="fas fa-home"></i>
+                            <div>Delivered</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="delivery-info">
+                    <div class="info-card">
+                        <h4>Delivery Address</h4>
+                        <div class="address-details">
+                            <p><strong>Susan Price</strong></p>
+                            <p>3860 Valacamp Ave</p>
+                            <p>SE Warren</p>
+                            <p>Ohio, OH 44484</p>
+                            <p>United States</p>
+                            <p><i class="fas fa-phone"></i> (330)716-3283</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h4>Shipment Details</h4>
+                        <div class="shipment-details">
+                            <p><strong>Service:</strong> Express Saver</p>
+                            <p><strong>Weight:</strong> 5.2 lbs</p>
+                            <p><strong>Dimensions:</strong> 12" x 8" x 4"</p>
+                            <p><strong>Shipped On:</strong> October 14, 2025</p>
+                            <p><strong>Estimated Delivery:</strong> October 27, 2025</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tracking-history">
+                    <h4>Tracking History</h4>
+                    <div class="history-item">
+                        <div class="history-date">Oct 15, 2025<br>10:30 AM</div>
+                        <div class="history-details">
+                            <strong>In transit</strong>
+                            <div class="history-location">Package has departed from distribution facility - NEW YORK, NY</div>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-date">Oct 15, 2023<br>3:15 PM</div>
+                        <div class="history-details">
+                            <strong>Arrived at facility</strong>
+                            <div class="history-location">Package arrived at distribution facility - NEW YORK, NY</div>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-date">Oct 14, 2024<br>9:45 AM</div>
+                        <div class="history-details">
+                            <strong>Departed facility</strong>
+                            <div class="history-location">Package departed from CHICAGO, IL</div>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-date">oct 14, 2025<br>2:20 PM</div>
+                        <div class="history-details">
+                            <strong>Shipped</strong>
+                            <div class="history-location">Package shipped from sender - CHICAGO, IL</div>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-date">Oct 14, 2025<br>11:05 AM</div>
+                        <div class="history-details">
+                            <strong>Order processed</strong>
+                            <div class="history-location">Shipping label created</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>GlobalTrack</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Investor Relations</a></li>
+                        <li><a href="#">Press Releases</a></li>
+                        <li><a href="#">Corporate Responsibility</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#">Shipping</a></li>
+                        <li><a href="#">Tracking</a></li>
+                        <li><a href="#">Pickup & Delivery</a></li>
+                        <li><a href="#">Supply Chain</a></li>
+                        <li><a href="#">Freight Services</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Help & Support</a></li>
+                        <li><a href="#">Claims</a></li>
+                        <li><a href="#">Service Information</a></li>
+                        <li><a href="#">Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">Accessibility</a></li>
+                        <li><a href="#">Site Map</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 GlobalTrack. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const trackBtn = document.getElementById('track-btn');
+            const trackingInput = document.getElementById('tracking-number');
+            const trackingResults = document.getElementById('tracking-results');
+            
+            // Show tracking results by default for demo purposes
+            trackingResults.style.display = 'block';
+            
+            trackBtn.addEventListener('click', function() {
+                const trackingNumber = trackingInput.value.trim();
+                
+                if (trackingNumber) {
+                    // In a real application, you would make an API call here
+                    // For demo purposes, we'll just show the results
+                    document.getElementById('display-tracking-id').textContent = trackingNumber;
+                    trackingResults.style.display = 'block';
+                    
+                    // Scroll to results
+                    trackingResults.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Please enter a tracking number');
+                }
+            });
+            
+            // Example tracking numbers for demo
+            trackingInput.value = '1Z999AA10123456784';
+        });
+    </script>
+</body>
+</html>
